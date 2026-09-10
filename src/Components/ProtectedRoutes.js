@@ -1,16 +1,23 @@
 import React, { useContext } from "react";
-import { myContext } from "./Context";
 import { Navigate } from "react-router-dom";
+import { myContext } from "./Context";
 
 const ProtectedRoutes = ({ children }) => {
-  const { isAuthenticated, loading } = useContext(myContext);
+  const { currentUser } =
+    useContext(myContext);
 
-  // ⏳ Wait until Firebase resolves auth
-  if (loading) {
-    return <h3>Checking authentication...</h3>;
+  const token =
+    localStorage.getItem("token");
+
+  if (!token || !currentUser) {
+    return <Navigate to="/login" replace />;
   }
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  if (currentUser.role !== "admin") {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoutes;
