@@ -87,7 +87,7 @@ const ProductsAPI = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await api.get("/categories");
+      const response = await api.get(`/categories?limit=50`);
 
       if (response.data.success) {
         setCategories(response.data.categories || []);
@@ -336,7 +336,10 @@ const ProductsAPI = () => {
       imageUrl: product.imageUrl || "",
       weight: product.weight || "",
       isExclusive: product.isExclusive || false,
-      category: product.category || "",
+      category:
+        typeof product.category === "object"
+          ? product.category?._id
+          : product.category || "",
     });
 
     setImageUrl(product.imageUrl || "");

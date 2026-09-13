@@ -1,13 +1,9 @@
-
 import "./App.css";
 
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import MyProvider from "./Components/Context";
+import PromoCodes from "./Components/PromoCodes";
 
 import Register from "./Components/Register";
 import Login from "./Components/Login";
@@ -22,16 +18,34 @@ function App() {
     <MyProvider>
       <Router>
         <Routes>
-
+          <Route path="/register" element={<Register />} />
           <Route
-            path="/register"
-            element={<Register />}
+            path="/orders"
+            element={
+              <ProtectedRoutes>
+                <OrdersAdmin />
+              </ProtectedRoutes>
+            }
           />
 
           <Route
-            path="/login"
-            element={<Login />}
+            path="/promo-codes"
+            element={
+              <ProtectedRoutes>
+                <PromoCodes />
+              </ProtectedRoutes>
+            }
           />
+
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoutes>
+                <Profile />
+              </ProtectedRoutes>
+            }
+          />
+          <Route path="/login" element={<Login />} />
 
           <Route
             path="/dashboard"
@@ -69,11 +83,7 @@ function App() {
             }
           />
 
-          <Route
-            path="*"
-            element={<Login />}
-          />
-
+          <Route path="*" element={<Login />} />
         </Routes>
       </Router>
     </MyProvider>

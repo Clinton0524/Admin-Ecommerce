@@ -1,4 +1,3 @@
-
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -42,11 +41,10 @@ const Dashboard = () => {
         setLoading(true);
         setError("");
 
-        const [ordersResponse, productsResponse] =
-          await Promise.all([
-            api.get("/orders"),
-            api.get("/products"),
-          ]);
+        const [ordersResponse, productsResponse] = await Promise.all([
+          api.get("/orders"),
+          api.get("/products"),
+        ]);
 
         setOrders(ordersResponse.data.orders || []);
         setProducts(productsResponse.data.products || []);
@@ -64,8 +62,7 @@ const Dashboard = () => {
         }
 
         setError(
-          error.response?.data?.message ||
-            "Failed to load dashboard data."
+          error.response?.data?.message || "Failed to load dashboard data.",
         );
       } finally {
         setLoading(false);
@@ -83,20 +80,16 @@ const Dashboard = () => {
     const totalOrders = orders.length;
 
     const pendingOrders = orders.filter(
-      (order) => order.status === "Pending"
+      (order) => order.status === "Pending",
     ).length;
 
     const deliveredOrders = orders.filter(
-      (order) => order.status === "Delivered"
+      (order) => order.status === "Delivered",
     ).length;
 
     const totalRevenue = orders
       .filter((order) => order.status !== "Cancelled")
-      .reduce(
-        (total, order) =>
-          total + Number(order.totalAmount || 0),
-        0
-      );
+      .reduce((total, order) => total + Number(order.totalAmount || 0), 0);
 
     return {
       totalProducts: products.length,
@@ -117,11 +110,7 @@ const Dashboard = () => {
     const now = new Date();
 
     for (let i = 5; i >= 0; i--) {
-      const date = new Date(
-        now.getFullYear(),
-        now.getMonth() - i,
-        1
-      );
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
 
       months.push({
         month: date.toLocaleString("en-US", {
@@ -143,17 +132,14 @@ const Dashboard = () => {
           item.month ===
             orderDate.toLocaleString("en-US", {
               month: "short",
-            }) &&
-          item.year === orderDate.getFullYear()
+            }) && item.year === orderDate.getFullYear(),
       );
 
       if (matchingMonth) {
         matchingMonth.orders += 1;
 
         if (order.status !== "Cancelled") {
-          matchingMonth.revenue += Number(
-            order.totalAmount || 0
-          );
+          matchingMonth.revenue += Number(order.totalAmount || 0);
         }
       }
     });
@@ -183,9 +169,7 @@ const Dashboard = () => {
 
     return statuses.map((status) => ({
       status,
-      orders: orders.filter(
-        (order) => order.status === status
-      ).length,
+      orders: orders.filter((order) => order.status === status).length,
     }));
   }, [orders]);
 
@@ -199,9 +183,7 @@ const Dashboard = () => {
     return methods
       .map((method) => ({
         name: method,
-        value: orders.filter(
-          (order) => order.paymentMethod === method
-        ).length,
+        value: orders.filter((order) => order.paymentMethod === method).length,
       }))
       .filter((item) => item.value > 0);
   }, [orders]);
@@ -212,11 +194,7 @@ const Dashboard = () => {
 
   const recentOrders = useMemo(() => {
     return [...orders]
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt || 0) -
-          new Date(a.createdAt || 0)
-      )
+      .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
       .slice(0, 5);
   }, [orders]);
 
@@ -313,11 +291,7 @@ const Dashboard = () => {
           <h2>Unable to load dashboard</h2>
           <p>{error}</p>
 
-          <button
-            onClick={() => window.location.reload()}
-          >
-            Try Again
-          </button>
+          <button onClick={() => window.location.reload()}>Try Again</button>
         </div>
       </div>
     );
@@ -329,36 +303,25 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-
       {/* =================================================
           SIDEBAR
       ================================================= */}
 
       <aside className="dashboard-sidebar">
-
-        <div className="dashboard-logo">
-          ADMIN PANEL
-        </div>
+        <div className="dashboard-logo">ADMIN PANEL</div>
 
         <div className="admin-info">
-
           <div className="admin-avatar">
-            {currentUser?.name
-              ?.charAt(0)
-              .toUpperCase() || "A"}
+            {currentUser?.name?.charAt(0).toUpperCase() || "A"}
           </div>
 
           <div>
             <h4>{currentUser?.name || "Admin"}</h4>
-            <span>
-              {currentUser?.email || "Administrator"}
-            </span>
+            <span>{currentUser?.email || "Administrator"}</span>
           </div>
-
         </div>
 
         <nav className="dashboard-menu">
-
           <button
             className="dashboard-menu-item active"
             onClick={() => navigate("/dashboard")}
@@ -385,22 +348,24 @@ const Dashboard = () => {
 
           <button
             className="dashboard-menu-item"
+            onClick={() => navigate("/promo-codes")}
+          >
+            <span>🏷️</span>
+            Promo Codes
+          </button>
+          <button
+            className="dashboard-menu-item"
             onClick={() => navigate("/profile")}
           >
             <span>👤</span>
             Profile
           </button>
-
         </nav>
 
-        <button
-          className="dashboard-logout"
-          onClick={handleLogoutClick}
-        >
+        <button className="dashboard-logout" onClick={handleLogoutClick}>
           <span>🚪</span>
           Logout
         </button>
-
       </aside>
 
       {/* =================================================
@@ -408,19 +373,14 @@ const Dashboard = () => {
       ================================================= */}
 
       <main className="dashboard-main">
-
         {/* Header */}
 
         <div className="dashboard-header">
-
           <div>
             <h1>Dashboard</h1>
 
             <p>
-              Welcome back,{" "}
-              <strong>
-                {currentUser?.name || "Admin"}
-              </strong>
+              Welcome back, <strong>{currentUser?.name || "Admin"}</strong>
             </p>
           </div>
 
@@ -430,7 +390,6 @@ const Dashboard = () => {
           >
             ↻ Refresh
           </button>
-
         </div>
 
         {/* =================================================
@@ -438,63 +397,41 @@ const Dashboard = () => {
         ================================================= */}
 
         <div className="dashboard-stat-grid">
-
           <div className="dashboard-stat-card">
-
-            <div className="stat-icon products-icon">
-              📦
-            </div>
+            <div className="stat-icon products-icon">📦</div>
 
             <div className="stat-content">
               <span>Total Products</span>
               <h2>{statistics.totalProducts}</h2>
             </div>
-
           </div>
 
           <div className="dashboard-stat-card">
-
-            <div className="stat-icon orders-icon">
-              🛒
-            </div>
+            <div className="stat-icon orders-icon">🛒</div>
 
             <div className="stat-content">
               <span>Total Orders</span>
               <h2>{statistics.totalOrders}</h2>
             </div>
-
           </div>
 
           <div className="dashboard-stat-card">
-
-            <div className="stat-icon pending-icon">
-              ⏳
-            </div>
+            <div className="stat-icon pending-icon">⏳</div>
 
             <div className="stat-content">
               <span>Pending Orders</span>
               <h2>{statistics.pendingOrders}</h2>
             </div>
-
           </div>
 
           <div className="dashboard-stat-card">
-
-            <div className="stat-icon revenue-icon">
-              ₹
-            </div>
+            <div className="stat-icon revenue-icon">₹</div>
 
             <div className="stat-content">
               <span>Total Revenue</span>
-              <h2>
-                {formatCurrency(
-                  statistics.totalRevenue
-                )}
-              </h2>
+              <h2>{formatCurrency(statistics.totalRevenue)}</h2>
             </div>
-
           </div>
-
         </div>
 
         {/* =================================================
@@ -502,21 +439,15 @@ const Dashboard = () => {
         ================================================= */}
 
         <div className="dashboard-actions">
-
-          <button
-            onClick={() => navigate("/products")}
-          >
+          <button onClick={() => navigate("/products")}>
             <span>📦</span>
             Manage Products
           </button>
 
-          <button
-            onClick={() => navigate("/orders")}
-          >
+          <button onClick={() => navigate("/orders")}>
             <span>🛒</span>
             Manage Orders
           </button>
-
         </div>
 
         {/* =================================================
@@ -524,32 +455,20 @@ const Dashboard = () => {
         ================================================= */}
 
         <div className="dashboard-chart-grid">
-
           {/* Monthly Orders */}
 
           <div className="dashboard-chart-card large-chart">
-
             <div className="chart-header">
               <div>
                 <h3>Monthly Orders</h3>
-                <p>
-                  Orders received during the last 6 months
-                </p>
+                <p>Orders received during the last 6 months</p>
               </div>
             </div>
 
             <div className="chart-container">
-
-              <ResponsiveContainer
-                width="100%"
-                height={320}
-              >
-                <LineChart
-                  data={monthlyOrdersData}
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                  />
+              <ResponsiveContainer width="100%" height={320}>
+                <LineChart data={monthlyOrdersData}>
+                  <CartesianGrid strokeDasharray="3 3" />
 
                   <XAxis dataKey="month" />
 
@@ -568,46 +487,29 @@ const Dashboard = () => {
                   />
                 </LineChart>
               </ResponsiveContainer>
-
             </div>
-
           </div>
 
           {/* Revenue */}
 
           <div className="dashboard-chart-card large-chart">
-
             <div className="chart-header">
               <div>
                 <h3>Revenue</h3>
-                <p>
-                  Revenue generated during the last 6 months
-                </p>
+                <p>Revenue generated during the last 6 months</p>
               </div>
             </div>
 
             <div className="chart-container">
-
-              <ResponsiveContainer
-                width="100%"
-                height={320}
-              >
-                <LineChart
-                  data={monthlyOrdersData}
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                  />
+              <ResponsiveContainer width="100%" height={320}>
+                <LineChart data={monthlyOrdersData}>
+                  <CartesianGrid strokeDasharray="3 3" />
 
                   <XAxis dataKey="month" />
 
                   <YAxis />
 
-                  <Tooltip
-                    formatter={(value) =>
-                      formatCurrency(value)
-                    }
-                  />
+                  <Tooltip formatter={(value) => formatCurrency(value)} />
 
                   <Legend />
 
@@ -620,11 +522,8 @@ const Dashboard = () => {
                   />
                 </LineChart>
               </ResponsiveContainer>
-
             </div>
-
           </div>
-
         </div>
 
         {/* =================================================
@@ -632,26 +531,18 @@ const Dashboard = () => {
         ================================================= */}
 
         <div className="dashboard-chart-grid">
-
           {/* Order Status */}
 
           <div className="dashboard-chart-card">
-
             <div className="chart-header">
               <div>
                 <h3>Orders by Status</h3>
-                <p>
-                  Current order distribution
-                </p>
+                <p>Current order distribution</p>
               </div>
             </div>
 
             <div className="chart-container">
-
-              <ResponsiveContainer
-                width="100%"
-                height={380}
-              >
+              <ResponsiveContainer width="100%" height={380}>
                 <BarChart
                   data={orderStatusData}
                   layout="vertical"
@@ -660,57 +551,34 @@ const Dashboard = () => {
                     right: 20,
                   }}
                 >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                  />
+                  <CartesianGrid strokeDasharray="3 3" />
 
-                  <XAxis
-                    type="number"
-                    allowDecimals={false}
-                  />
+                  <XAxis type="number" allowDecimals={false} />
 
-                  <YAxis
-                    type="category"
-                    dataKey="status"
-                    width={110}
-                  />
+                  <YAxis type="category" dataKey="status" width={110} />
 
                   <Tooltip />
 
-                  <Bar
-                    dataKey="orders"
-                    name="Orders"
-                    radius={[0, 5, 5, 0]}
-                  />
+                  <Bar dataKey="orders" name="Orders" radius={[0, 5, 5, 0]} />
                 </BarChart>
               </ResponsiveContainer>
-
             </div>
-
           </div>
 
           {/* Payment Methods */}
 
           <div className="dashboard-chart-card">
-
             <div className="chart-header">
               <div>
                 <h3>Payment Methods</h3>
-                <p>
-                  Orders by payment method
-                </p>
+                <p>Orders by payment method</p>
               </div>
             </div>
 
             <div className="chart-container payment-chart">
-
               {paymentMethodData.length > 0 ? (
-                <ResponsiveContainer
-                  width="100%"
-                  height={380}
-                >
+                <ResponsiveContainer width="100%" height={380}>
                   <PieChart>
-
                     <Pie
                       data={paymentMethodData}
                       dataKey="value"
@@ -720,34 +588,24 @@ const Dashboard = () => {
                       outerRadius={125}
                       label
                     >
-                      {paymentMethodData.map(
-                        (entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                          />
-                        )
-                      )}
+                      {paymentMethodData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} />
+                      ))}
                     </Pie>
 
                     <Tooltip />
 
                     <Legend />
-
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
                 <div className="no-chart-data">
                   <span>📊</span>
-                  <p>
-                    No payment data available
-                  </p>
+                  <p>No payment data available</p>
                 </div>
               )}
-
             </div>
-
           </div>
-
         </div>
 
         {/* =================================================
@@ -755,22 +613,15 @@ const Dashboard = () => {
         ================================================= */}
 
         <div className="recent-orders-card">
-
           <div className="recent-orders-header">
-
             <div>
               <h3>Recent Orders</h3>
-              <p>
-                Latest orders placed by customers
-              </p>
+              <p>Latest orders placed by customers</p>
             </div>
 
-            <button
-              onClick={() => navigate("/orders")}
-            >
+            <button onClick={() => navigate("/orders")}>
               View All Orders →
             </button>
-
           </div>
 
           {recentOrders.length === 0 ? (
@@ -780,9 +631,7 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="orders-table-wrapper">
-
               <table className="dashboard-orders-table">
-
                 <thead>
                   <tr>
                     <th>Order ID</th>
@@ -795,65 +644,41 @@ const Dashboard = () => {
                 </thead>
 
                 <tbody>
-
                   {recentOrders.map((order) => (
-
                     <tr key={order._id}>
+                      <td>
+                        <strong>#{order._id?.slice(-8)}</strong>
+                      </td>
+
+                      <td>{order.userId?.name || "Customer"}</td>
+
+                      <td>{formatDate(order.createdAt)}</td>
 
                       <td>
                         <strong>
-                          #{order._id?.slice(-8)}
+                          {formatCurrency(Number(order.totalAmount || 0))}
                         </strong>
                       </td>
 
-                      <td>
-                        {order.userId?.name ||
-                          "Customer"}
-                      </td>
-
-                      <td>
-                        {formatDate(order.createdAt)}
-                      </td>
-
-                      <td>
-                        <strong>
-                          {formatCurrency(
-                            Number(
-                              order.totalAmount || 0
-                            )
-                          )}
-                        </strong>
-                      </td>
-
-                      <td>
-                        {order.paymentMethod || "-"}
-                      </td>
+                      <td>{order.paymentMethod || "-"}</td>
 
                       <td>
                         <span
                           className={`order-status ${getStatusClass(
-                            order.status
+                            order.status,
                           )}`}
                         >
                           {order.status}
                         </span>
                       </td>
-
                     </tr>
-
                   ))}
-
                 </tbody>
-
               </table>
-
             </div>
           )}
-
         </div>
-
       </main>
-
     </div>
   );
 };
